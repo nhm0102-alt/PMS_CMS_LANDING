@@ -66,27 +66,77 @@ export default function OTASlider() {
 
       {/* Stats row */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-14">
-        <div className="grid grid-cols-3 gap-6 text-center">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           {[
-            { badge: "Tăng", value: "10%", icon: "↗", color: "text-green-400", desc: "Tỷ lệ lấp đầy khi sử dụng" },
-            { badge: "Giảm", value: "40%", icon: "↘", color: "text-red-400", desc: "Thời gian quản lý thủ công" },
-            { badge: "Tiết kiệm", value: "60%", icon: "◎", color: "text-gold", desc: "Chi phí so với các nền tảng khác" },
+            {
+              label: "Tỷ lệ lấp đầy phòng",
+              value: "10%",
+              desc: "Tăng doanh thu đáng kể ngay từ tháng đầu sử dụng",
+              gradient: "from-violet-500/20 to-purple-600/10",
+              border: "border-violet-500/30",
+              valueColor: "text-violet-300",
+              chartColor: "#a78bfa",
+              // trending up sparkline points
+              points: "0,32 10,28 20,24 30,26 40,18 50,14 60,10 70,6 80,4 90,2",
+            },
+            {
+              label: "Thời gian vận hành thủ công",
+              value: "40%",
+              desc: "Tự động hoá quy trình, đội ngũ tập trung vào trải nghiệm khách",
+              gradient: "from-sky-500/20 to-blue-600/10",
+              border: "border-sky-400/30",
+              valueColor: "text-sky-300",
+              chartColor: "#7dd3fc",
+              // trending down sparkline points
+              points: "0,2 10,4 20,8 30,6 40,12 50,16 60,20 70,24 80,28 90,32",
+            },
+            {
+              label: "Chi phí nền tảng",
+              value: "60%",
+              desc: "Tiết kiệm so với các giải pháp riêng lẻ trên thị trường",
+              gradient: "from-amber-500/20 to-yellow-600/10",
+              border: "border-amber-400/30",
+              valueColor: "text-gold",
+              chartColor: "#d4a853",
+              // steep down sparkline
+              points: "0,2 10,5 20,10 30,8 40,15 50,20 60,24 70,28 80,30 90,32",
+            },
           ].map((s, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="bg-card border border-border rounded-2xl p-6 hover:border-gold/30 transition-all"
+              transition={{ delay: i * 0.12 }}
+              whileHover={{ y: -4, scale: 1.02 }}
+              className={`relative bg-gradient-to-br ${s.gradient} border ${s.border} rounded-2xl p-7 overflow-hidden transition-all duration-300 cursor-default`}
             >
-              <span className="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-secondary text-muted-foreground mb-3">
-                {s.badge}
-              </span>
-              <div className={`text-4xl font-bold mb-2 ${s.color}`}>
-                <span className="text-2xl mr-1">{s.icon}</span>{s.value}
+              <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full blur-2xl opacity-30 bg-white/10" />
+
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">{s.label}</p>
+
+              <div className="flex items-end gap-4 mb-3">
+                <div className={`text-5xl font-extrabold ${s.valueColor} tabular-nums leading-none`}>{s.value}</div>
+                {/* Sparkline */}
+                <svg viewBox="0 0 90 34" className="w-20 h-9 mb-1" fill="none">
+                  <defs>
+                    <linearGradient id={`grad-${i}`} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={s.chartColor} stopOpacity="0.35" />
+                      <stop offset="100%" stopColor={s.chartColor} stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <polyline
+                    points={s.points}
+                    fill="none"
+                    stroke={s.chartColor}
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               </div>
-              <p className="text-sm text-muted-foreground">{s.desc}</p>
+
+              <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
             </motion.div>
           ))}
         </div>
