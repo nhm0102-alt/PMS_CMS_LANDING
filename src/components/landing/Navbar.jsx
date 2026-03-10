@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Cloud, ChevronDown, LayoutDashboard, GitBranch, Globe, BarChart2, Smartphone } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -37,10 +39,10 @@ const featuresMenu = [
 ];
 
 const solutionsMenu = [
-  { label: "Homestay", href: "#hero" },
-  { label: "Biệt thự", href: "#hero" },
-  { label: "Villa nguyên căn", href: "#hero" },
-  { label: "Khách sạn", href: "#pms" },
+  { label: "Homestay", page: "HomestayPage" },
+  { label: "Nhà trọ", page: "NhaTroPage" },
+  { label: "Villa nguyên căn", page: "VillaPage" },
+  { label: "Khách sạn", page: "KhachSanPage" },
 ];
 
 const simpleLinks = [
@@ -145,15 +147,25 @@ export default function Navbar() {
             {/* Giải pháp ứng dụng */}
             <DropdownMenu label="Giải pháp ứng dụng">
               <div className="py-2">
-                {solutionsMenu.map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    className="block px-5 py-2.5 text-sm text-muted-foreground hover:text-gold hover:bg-secondary/50 transition-colors"
-                  >
-                    {item.label}
-                  </a>
-                ))}
+                {solutionsMenu.map((item) =>
+                  item.page ? (
+                    <Link
+                      key={item.label}
+                      to={createPageUrl(item.page)}
+                      className="block px-5 py-2.5 text-sm text-muted-foreground hover:text-gold hover:bg-secondary/50 transition-colors"
+                    >
+                      {item.label}
+                    </Link>
+                  ) : (
+                    <a
+                      key={item.label}
+                      href={item.href}
+                      className="block px-5 py-2.5 text-sm text-muted-foreground hover:text-gold hover:bg-secondary/50 transition-colors"
+                    >
+                      {item.label}
+                    </a>
+                  )
+                )}
               </div>
             </DropdownMenu>
 
@@ -222,12 +234,18 @@ export default function Navbar() {
               </button>
               {mobileSolutions && (
                 <div className="pl-4 space-y-1">
-                  {solutionsMenu.map((item) => (
-                    <a key={item.label} href={item.href} onClick={() => setMobileOpen(false)}
-                      className="block px-4 py-2 text-sm text-muted-foreground hover:text-gold rounded-lg hover:bg-secondary/50 transition-colors">
-                      {item.label}
-                    </a>
-                  ))}
+                  {solutionsMenu.map((item) => {
+                    const cls = "block px-4 py-2 text-sm text-muted-foreground hover:text-gold rounded-lg hover:bg-secondary/50 transition-colors";
+                    return item.page ? (
+                      <Link key={item.label} to={createPageUrl(item.page)} onClick={() => setMobileOpen(false)} className={cls}>
+                        {item.label}
+                      </Link>
+                    ) : (
+                      <a key={item.label} href={item.href} onClick={() => setMobileOpen(false)} className={cls}>
+                        {item.label}
+                      </a>
+                    );
+                  })}
                 </div>
               )}
 
