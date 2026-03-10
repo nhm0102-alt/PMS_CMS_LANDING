@@ -1,7 +1,40 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Star, Users, Building2 } from "lucide-react";
 import { motion } from "framer-motion";
+
+const ROTATING_WORDS = ["Khách Sạn", "Homestay", "Biệt thự, villa nguyên căn"];
+
+function TypingText() {
+  const [wordIndex, setWordIndex] = useState(0);
+  const [displayed, setDisplayed] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const current = ROTATING_WORDS[wordIndex];
+    let timeout;
+
+    if (!isDeleting && displayed.length < current.length) {
+      timeout = setTimeout(() => setDisplayed(current.slice(0, displayed.length + 1)), 80);
+    } else if (!isDeleting && displayed.length === current.length) {
+      timeout = setTimeout(() => setIsDeleting(true), 1800);
+    } else if (isDeleting && displayed.length > 0) {
+      timeout = setTimeout(() => setDisplayed(current.slice(0, displayed.length - 1)), 45);
+    } else if (isDeleting && displayed.length === 0) {
+      setIsDeleting(false);
+      setWordIndex((i) => (i + 1) % ROTATING_WORDS.length);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [displayed, isDeleting, wordIndex]);
+
+  return (
+    <span className="text-gold">
+      {displayed}
+      <span className="animate-pulse">|</span>
+    </span>
+  );
+}
 
 export default function HeroSection() {
   return (
@@ -30,9 +63,8 @@ export default function HeroSection() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              Hệ sinh thái quản trị{" "}
-              <span className="text-gold">khách sạn</span>{" "}
-              hàng đầu Việt Nam
+              Hệ sinh thái quản trị toàn diện dành cho{" "}
+              <TypingText />
             </h1>
 
             <p className="text-lg text-muted-foreground mb-4 max-w-lg">
